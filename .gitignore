@@ -4,5 +4,5 @@
 .idea/Notify.it-Server.iml
 .idea/vcs.xml
 .idea/workspace.xml
-./node_modules/
+/node_modules/
 

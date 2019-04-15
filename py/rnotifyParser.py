@@ -10,7 +10,7 @@ import socket
 import sys
 
 
-database = "/home/dillscody/rNotify/users.db"
+database = "./users.db"
 lock_socket = None
 
 def lock_socket():

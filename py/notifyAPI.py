@@ -10,7 +10,7 @@ from flask_restful import Resource, Api, reqparse
 app = Flask(__name__)
 api = Api(app)
 masterList = []
-database = "/home/dillscody/rNotify/users.db"   #Will create if noexist
+database = "./users.db"   #Will create if noexist
 
 class userprefs(): #Define empty string for argument objects. Not sure if required.
     sub = ""
@@ -39,7 +39,7 @@ class CreateMonitor(Resource): #Updates DB with arguments from POST. Returns pos
 
             with sqlite3.connect(database) as con:
                 cur = con.cursor()
-                cur.execute(f"INSERT INTO users (id,sub,query,udid) VALUES (Null, \"{newUser.sub}\", \"{newUser.query}\", \"{newUser.udid}\") WHERE NOT EXISTS (SELECT * FROM users WHERE sub = \"{newUser.sub}\" AND query = \"{newUser.query}\" AND udid = \"{newUser.udid}\")")
+                cur.execute(f"INSERT INTO users (id,sub,query,udid) VALUES (Null, \"{newUser.sub}\", \"{newUser.query}\", \"{newUser.udid}\") ") """WHERE NOT EXISTS (SELECT * FROM users WHERE sub = \"{newUser.sub}\" AND query = \"{newUser.query}\" AND udid = \"{newUser.udid}\")")
                 con.commit()
 
             return {'sub': args['sub'], 'query': args['query'], 'udid': args['udid']}
