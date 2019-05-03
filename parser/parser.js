@@ -19,10 +19,11 @@ async function getUsers() {
 
 async function downloadNewPost() {
    const users = await getUsers()
+   console.log(users)
    return reddit.getSubreddit('rocketleagueexchange').getNew()
-    .filter(post => post.subreddit.display_name = users.sub).then(console.log);
+    .filter(post => post.title.indexOf(users.query) > -1).then((post) => post.forEach((submission) => console.log(submission.title)));
 }; 
 
 //setInterval(downloadNewPost, 1500)
 //getUsers();
-//downloadNewPost();
+downloadNewPost();
