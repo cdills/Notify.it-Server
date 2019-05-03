@@ -1,6 +1,7 @@
 var config = require('./parserConfig.js'); 
 var snoowrap = require('snoowrap');
 var sqlite = require('sqlite');
+var Fuse = require('fuse.js');
 
 const reddit = new snoowrap ({
     userAgent: config.userAgent,
@@ -10,20 +11,46 @@ const reddit = new snoowrap ({
     password: config.password
 })
 
+const fuseOptions = {
+    shouldSort: true,
+    includeMatches: true,
+    threshold: 0.6,
+    location: 0,
+    distance: 100,
+    maxPatternLength: 32,
+    minMatchCharLength: 1,
+    keys: [
+      "title"
+    ]
+  };
+
 var dbPromise = sqlite.open('./rsc/users.db', { Promise });
 
 async function getUsers() {
     db = await dbPromise;
-    return users = await db.get( "SELECT DISTINCT ID, sub, query, udid FROM users Group BY sub, query, udid ORDER BY id");
+    result = await db.all( "SELECT ID, sub, query, udid FROM users Group BY sub, query, udid ORDER BY id")
+    return result
+    
 }
 
 async function downloadNewPost() {
-   const users = await getUsers()
-   console.log(users)
-   return reddit.getSubreddit('rocketleagueexchange').getNew()
-    .filter(post => post.title.indexOf(users.query) > -1).then((post) => post.forEach((submission) => console.log(submission.title)));
+    posts = await reddit.getSubreddit('rocketleagueexchange').getNew()
+    return posts
 }; 
 
-//setInterval(downloadNewPost, 1500)
-//getUsers();
-downloadNewPost();
+async function parse () {
+    var users = await getUsers()
+    console.log(users);
+    var newPosts = await downloadNewPost()
+    users.forEach((user) => {
+
+        var fuse = new Fuse(newPosts, fuseOptions)
+        var result = fuse.search(user.query)
+        result.forEach((post) => console.log(post.item.title))
+
+        }
+    )
+};
+
+
+parse();
