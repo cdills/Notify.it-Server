@@ -13,6 +13,7 @@
     "http-errors": "~1.6.2",
     "jade": "~1.11.0",
     "morgan": "~1.9.0",
-    "snoowrap": "^1.15.2"
+    "snoowrap": "^1.15.2",
+    "sqlite": "^3.0.3"
   }
 }
