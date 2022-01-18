@@ -58,7 +58,7 @@ def retrieveUsers():
 def getReddit():
     global reddit, subreddit
     reddit = praw.Reddit(client_id='', client_secret='',
-                         password='notifire123', user_agent='',
+                         password='', user_agent='',
                          username='')
     subreddit = reddit.subreddit("all")
     return subreddit
