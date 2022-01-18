@@ -13,14 +13,6 @@ import sys
 database = "./users.db"
 lock_socket = None
 
-def lock_socket():
-    global lock_socket
-    lock_socket = socket.socket(socket.AF_UNIX, socket.SOCK_DGRAM)
-    lock_id = "dillscody.parser"   # this should be unique. using your username as a prefix is a convention
-    lock_socket.bind('\0' + lock_id)
-    logging.debug("Acquired lock %r" % (lock_id,))
-    return True
-
 class RepeatedTimer(object):
   def __init__(self, interval, function, *args, **kwargs):
     self._timer = None
@@ -63,23 +55,16 @@ def retrieveUsers():
     return userList
 
 
-def hello(name):
-    print("Hello %s!" % name)
-
-
 def getReddit():
     global reddit, subreddit
-    reddit = praw.Reddit(client_id='', client_secret="l",
-                         password='stupid', user_agent='',
+    reddit = praw.Reddit(client_id='', client_secret='',
+                         password='notifire123', user_agent='',
                          username='')
     subreddit = reddit.subreddit("all")
-
-    # http://127.0.0.1:65010/authorize_callback
     return subreddit
 
 
-def createAllStream(subreddit):  # must be run with reddit_auth as argument
-
+def createAllStream(subreddit): 
     stream = subreddit.stream.submissions()
     return stream
 
@@ -115,11 +100,8 @@ def postNotif(title, shortlink,  userUUID):
 
 def main():
     global userList
-    lock_socket()
     stream = createAllStream(getReddit())
-   # for submission in stream:
-      #  parseSubmission(submission)
-    executor = concurrent.futures.ProcessPoolExecutor(3)
+    executor = concurrent.futures.ProcessPoolExecutor(10)
     futures = [executor.submit(parseSubmission, submission) for submission in stream]
     concurrent.futures.as_completed(futures)
 
